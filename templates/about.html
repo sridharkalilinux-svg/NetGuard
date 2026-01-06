@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-8">
+    <h2 class="text-3xl font-bold text-white mb-2">About NetGuard</h2>
+    <p class="text-zinc-400">Next-Generation Automated Network Forensics Platform</p>
+</div>
+
+<div class="glass-panel p-8 rounded-3xl mb-8 border-l-4 border-l-white">
+    <h3 class="text-xl font-semibold text-white mb-4">Project Objective</h3>
+    <p class="text-zinc-300 leading-relaxed">
+        NetGuard is an automated PCAP analysis platform built to make network forensics accessible and practical for everyone—not just security experts. It helps users understand what is really happening inside network traffic by analyzing packet capture files and transforming raw data into clear, actionable security insights.<br>
+
+By intelligently parsing PCAP files and applying heuristic-based detection techniques, NetGuard identifies suspicious behavior such as brute-force attempts, injection attacks, reconnaissance activity, and abnormal communication patterns. 
+Instead of overwhelming users with low-level packet details, the platform highlights meaningful events, correlates them into
+ sessions, and assigns risk levels to prioritize investigation.<br><br>
+
+NetGuard is designed with an investigation-first mindset. It not only detects potential threats but also provides context through timelines, flow reconstruction, and geolocation insights helping users trace attack paths and understand attacker behavior. Whether used for learning, incident analysis, or security monitoring, NetGuard bridges the gap between raw network data and informed decision-making in cybersecurity.
+    </p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    <div class="glass-panel p-8 rounded-3xl">
+        <h3 class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+            <i class="fas fa-cogs"></i> How Detection Works
+        </h3>
+        <ul class="space-y-4 text-zinc-300">
+            <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-white mt-1"></i>
+                <div>
+                    <strong class="text-white block">Reconnaissance</strong>
+                    <span class="text-sm text-zinc-400">Detects port scanning (High SYN, Nmap patterns).</span>
+                </div>
+            </li>
+            <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-white mt-1"></i>
+                <div>
+                    <strong class="text-white block">Brute Force</strong>
+                    <span class="text-sm text-zinc-400">Identifies repeated authentication failures on SSH/FTP/HTTP.</span>
+                </div>
+            </li>
+            <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-white mt-1"></i>
+                <div>
+                    <strong class="text-white block">Injections</strong>
+                    <span class="text-sm text-zinc-400">Scans payloads for SQLi (`UNION SELECT`) and Command Injection patterns.</span>
+                </div>
+            </li>
+            <li class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-white mt-1"></i>
+                <div>
+                    <strong class="text-white block">Clear-Text Creds</strong>
+                    <span class="text-sm text-zinc-400">Extracts unencrypted Basic Auth and FTP credentials.</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="glass-panel p-8 rounded-3xl">
+        <h3 class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+            <i class="fas fa-code"></i> Tech Stack
+        </h3>
+        <div class="space-y-4">
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
+                <span class="text-zinc-300">Backend</span>
+                <span class="text-xs font-mono text-zinc-300 bg-zinc-800 px-2 py-1 rounded border border-zinc-700">Python, Flask, Scapy</span>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
+                <span class="text-zinc-300">Frontend</span>
+                <span class="text-xs font-mono text-zinc-300 bg-zinc-800 px-2 py-1 rounded border border-zinc-700">HTML5, Tailwind CSS, Chart.js</span>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
+                <span class="text-zinc-300">Analysis Engine</span>
+                <span class="text-xs font-mono text-zinc-300 bg-zinc-800 px-2 py-1 rounded border border-zinc-700">Custom Heuristics</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="glass-panel p-6 rounded-3xl border border-white/10 bg-zinc-900/50 mb-8">
+    <div class="flex items-start gap-4">
+        <i class="fas fa-exclamation-triangle text-white text-xl mt-1"></i>
+        <div>
+            <h3 class="text-lg font-semibold text-white mb-1">Disclaimer</h3>
+            <p class="text-zinc-400 text-sm">
+                This tool is for educational and defensive purposes only. 
+                Users are responsible for ensuring they have authorization to analyze the network traffic they upload.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Knowledge Base -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+    <div class="glass-panel p-8 rounded-3xl">
+        <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+            <i class="fas fa-book text-zinc-400"></i> Core Concepts
+        </h3>
+        <div class="space-y-6">
+            <div>
+                <strong class="text-white block text-lg mb-1">PCAP Tracing</strong>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    Packet Capture (PCAP) is an API for capturing network traffic. It logs the exact data packets traversing a network interface, allowing analysts to reconstruct sessions, inspect payloads, and diagnose connectivity issues or security breaches.
+                </p>
+            </div>
+            <div>
+                <strong class="text-white block text-lg mb-1">Cybersecurity & Forensics</strong>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    Network forensics involves monitoring and analyzing computer network traffic for the purposes of information gathering, legal evidence, or intrusion detection. Unlike firewalls which block traffic, forensics tools analyze what has already passed through.
+                </p>
+            </div>
+            <div>
+                <strong class="text-white block text-lg mb-1">Network Protocols</strong>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    Standardized rules for formatting data (like TCP, UDP, HTTP). Analyzing protocol headers helps identify anomalies, such as non-standard flags in TCP handshakes or malformed HTTP requests indicative of attacks.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-panel p-8 rounded-3xl">
+        <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+            <i class="fas fa-industry text-zinc-400"></i> Industry Context
+        </h3>
+        <div class="space-y-6">
+            <div>
+                <strong class="text-white block text-lg mb-1">BlueHat</strong>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    Refers to external security researchers or Microsoft's security conference series. In a broader context, it represents the collaboration between independent researchers and software vendors to identify and patch vulnerabilities before they are exploited.
+                </p>
+            </div>
+            <div>
+                <strong class="text-white block text-lg mb-1">Similar Platforms</strong>
+                <ul class="list-disc list-inside text-zinc-400 text-sm space-y-2 mt-2">
+                    <li><strong class="text-zinc-300">Wireshark:</strong> The industry standard for manual deep-packet inspection.</li>
+                    <li><strong class="text-zinc-300">Zeek (Bro):</strong> Powerful network analysis framework for security monitoring.</li>
+                    <li><strong class="text-zinc-300">Suricata:</strong> High-performance Network IDS, IPS, and Network Security Monitoring engine.</li>
+                    <li><strong class="text-zinc-300">Arkime (Moloch):</strong> Large scale, open source, indexed packet capture and search tool.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Reconnaissance Section -->
+<div class="glass-panel p-8 rounded-3xl mb-12 border-l-4 border-l-white">
+    <h3 class="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+        <i class="fas fa-binoculars text-zinc-400"></i> Understanding Reconnaissance
+    </h3>
+    <div class="text-zinc-300 leading-relaxed space-y-6">
+        <p>
+            Reconnaissance is the preliminary phase of a cyber attack where the adversary gathers information about the target system or network. This stage is critical as it defines the strategy for the subsequent intrusion. Unlike brute-force or exploitation attacks, reconnaissance can often be "silent," making it harder to detect without deep packet inspection.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <strong class="text-white block mb-4 text-sm uppercase tracking-wider border-b border-white/10 pb-2">Key Objectives</strong>
+                <ul class="space-y-3 text-sm text-zinc-400">
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-bullseye text-white mt-1"></i>
+                        <div>
+                            <strong class="text-zinc-200">Asset Discovery</strong>
+                            <p class="mt-0.5">Identifying active hosts, IP addresses, and network topology to map the attack surface.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-network-wired text-white mt-1"></i>
+                        <div>
+                            <strong class="text-zinc-200">Service Enumeration</strong>
+                            <p class="mt-0.5">Determining which applications and versions are running on open ports (e.g., Apache 2.4, SSH-2.0).</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-unlock-alt text-white mt-1"></i>
+                        <div>
+                            <strong class="text-zinc-200">Vulnerability Mapping</strong>
+                            <p class="mt-0.5">Correlating discovered services with known CVEs to find entry points.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div>
+                <strong class="text-white block mb-4 text-sm uppercase tracking-wider border-b border-white/10 pb-2">NetGuard Detection Strategy</strong>
+                <p class="text-sm text-zinc-400 mb-4">
+                    NetGuard utilizes heuristic analysis to spot reconnaissance patterns that evade simple firewall rules:
+                </p>
+                <div class="space-y-3">
+                    <div class="bg-white/5 p-3 rounded-2xl border border-white/5">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-zinc-200 font-medium text-sm">Port Scanning (Nmap)</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">High Noise</span>
+                        </div>
+                        <p class="text-xs text-zinc-500">Detects rapid connection attempts across multiple ports from a single source.</p>
+                    </div>
+                    <div class="bg-white/5 p-3 rounded-2xl border border-white/5">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-zinc-200 font-medium text-sm">Stealth Scans (SYN/FIN)</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">Low Profile</span>
+                        </div>
+                        <p class="text-xs text-zinc-500">Identifies incomplete TCP handshakes used to map ports without establishing full connections.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

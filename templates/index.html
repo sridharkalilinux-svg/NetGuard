@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto max-w-4xl">
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-bold mb-4 tracking-tight text-white">
+            Automated <span class="text-zinc-400">PCAP Analysis</span> <br/>& <span class="text-zinc-200">Threat Detection</span>
+        </h1>
+        <p class="text-zinc-500 text-lg max-w-2xl mx-auto leading-relaxed">
+            Upload your network capture files to identify reconnaissance, brute force, injections, and traffic anomalies instantly.
+        </p>
+    </div>
+
+    <div class="glass-panel rounded-3xl p-1 mb-12">
+        <div id="drop-zone" class="rounded-2xl border-2 border-dashed border-zinc-800 hover:border-zinc-500 hover:bg-white/5 transition-all duration-300 p-16 text-center cursor-pointer group bg-black/20">
+            <div class="mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-cloud-upload-alt fa-4x text-zinc-600 group-hover:text-white transition-colors"></i>
+            </div>
+            <h3 class="text-2xl font-semibold text-zinc-200 mb-2">Upload PCAP / PCAPNG</h3>
+            <p class="text-zinc-500 mb-6">Drag & drop your file here or click to browse</p>
+            
+            <button class="px-8 py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-medium transition-colors border border-zinc-700 hover:border-zinc-600" onclick="document.getElementById('file-input').click()">
+                Select File
+            </button>
+            <input type="file" id="file-input" hidden accept=".pcap,.pcapng,.cap">
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-panel p-6 rounded-3xl hover:bg-white/5 transition-colors group">
+            <div class="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center mb-4 group-hover:bg-zinc-700 transition-colors">
+                <i class="fas fa-bug text-xl text-zinc-400 group-hover:text-white transition-colors"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-zinc-200 mb-2">Threat Detection</h3>
+            <p class="text-zinc-500 text-sm leading-relaxed">Identifies SQLi, Brute Force, Port Scans, and Suspicious Payloads.</p>
+        </div>
+        
+        <div class="glass-panel p-6 rounded-3xl hover:bg-white/5 transition-colors group">
+            <div class="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center mb-4 group-hover:bg-zinc-700 transition-colors">
+                <i class="fas fa-network-wired text-xl text-zinc-400 group-hover:text-white transition-colors"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-zinc-200 mb-2">Traffic Analysis</h3>
+            <p class="text-zinc-500 text-sm leading-relaxed">Visualizes sessions, protocols, and bandwidth usage over time.</p>
+        </div>
+        
+        <div class="glass-panel p-6 rounded-3xl hover:bg-white/5 transition-colors group">
+            <div class="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center mb-4 group-hover:bg-zinc-700 transition-colors">
+                <i class="fas fa-globe-americas text-xl text-zinc-400 group-hover:text-white transition-colors"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-zinc-200 mb-2">Geolocation</h3>
+            <p class="text-zinc-500 text-sm leading-relaxed">Maps source and destination IPs to countries and ISPs.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex flex-col justify-center items-center invisible opacity-0 transition-all duration-300">
+    <div class="relative w-20 h-20 mb-6">
+        <div class="absolute inset-0 border-4 border-zinc-800 rounded-full"></div>
+        <div class="absolute inset-0 border-4 border-t-white rounded-full animate-spin"></div>
+    </div>
+    <h2 class="text-2xl font-bold text-white mb-2">Analyzing Traffic...</h2>
+    <p class="text-zinc-500">This may take a moment depending on file size.</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const overlay = document.getElementById('loading-overlay');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+        dropZone.classList.add('border-white/20', 'bg-white/5');
+        dropZone.classList.remove('border-zinc-800');
+    }
+
+    function unhighlight(e) {
+        dropZone.classList.remove('border-white/20', 'bg-white/5');
+        dropZone.classList.add('border-zinc-800');
+    }
+
+    dropZone.addEventListener('drop', handleDrop, false);
+    fileInput.addEventListener('change', (e) => handleFiles(e.target.files), false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+    }
+
+    function handleFiles(files) {
+        if (files.length > 0) {
+            uploadFile(files[0]);
+        }
+    }
+
+    function uploadFile(file) {
+        overlay.classList.remove('invisible', 'opacity-0');
+        
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('{{ url_for("upload_file") }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert('Error: ' + data.error);
+                overlay.classList.add('invisible', 'opacity-0');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Upload failed.');
+            overlay.classList.add('invisible', 'opacity-0');
+        });
+    }
+</script>
+{% endblock %}

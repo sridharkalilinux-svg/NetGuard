@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+            <i class="fas fa-biohazard"></i> Detected Threats
+        </h2>
+        <div class="text-zinc-500 text-sm mt-1">Security events requiring investigation</div>
+    </div>
+    <div class="flex gap-3">
+        <button onclick="document.getElementById('brute-force-section').scrollIntoView({behavior: 'smooth'})" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl border border-zinc-700 transition-colors flex items-center gap-2 text-sm font-medium shadow-lg hover:shadow-zinc-900/50">
+            <i class="fas fa-hammer text-zinc-400"></i>
+            <span>View Brute Force</span>
+        </button>
+        <button onclick="document.getElementById('recon-section').scrollIntoView({behavior: 'smooth'})" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl border border-zinc-700 transition-colors flex items-center gap-2 text-sm font-medium shadow-lg hover:shadow-zinc-900/50">
+            <i class="fas fa-binoculars text-zinc-400"></i>
+            <span>View Reconnaissance</span>
+        </button>
+    </div>
+</div>
+
+<div class="glass-panel rounded-3xl overflow-hidden border-white/10 mb-8">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse" id="threats-table">
+            <thead>
+                <tr class="bg-zinc-900/50 text-zinc-400 text-xs uppercase tracking-wider">
+                    <th class="px-6 py-3 font-semibold">Threat Type</th>
+                    <th class="px-6 py-3 font-semibold">Source IP</th>
+                    <th class="px-6 py-3 font-semibold">Target IP</th>
+                    <th class="px-6 py-3 font-semibold">Severity</th>
+                    <th class="px-6 py-3 font-semibold">Details</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-800 text-sm text-zinc-300">
+                <!-- Populated by JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Reconnaissance Section -->
+<div id="recon-section" class="mb-8 pt-4">
+    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <i class="fas fa-network-wired text-zinc-400"></i> Reconnaissance Events
+    </h3>
+    <div class="glass-panel rounded-3xl overflow-hidden border-white/10">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse" id="recon-table">
+                <thead>
+                    <tr class="bg-zinc-900/50 text-zinc-400 text-xs uppercase tracking-wider">
+                        <th class="px-6 py-3 font-semibold">Scan Type</th>
+                        <th class="px-6 py-3 font-semibold">Source IP</th>
+                        <th class="px-6 py-3 font-semibold">Target</th>
+                        <th class="px-6 py-3 font-semibold">Severity</th>
+                        <th class="px-6 py-3 font-semibold">Details</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-800 text-sm text-zinc-300">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Brute Force Section -->
+<div id="brute-force-section" class="mb-8 pt-4 border-t border-zinc-800">
+    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <i class="fas fa-hammer text-zinc-400"></i> Brute Force Attempts
+    </h3>
+    <div class="glass-panel rounded-3xl overflow-hidden border-white/10">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse" id="brute-force-table">
+                <thead>
+                    <tr class="bg-zinc-900/50 text-zinc-400 text-xs uppercase tracking-wider">
+                        <th class="px-6 py-3 font-semibold">Attack Type</th>
+                        <th class="px-6 py-3 font-semibold">Source IP</th>
+                        <th class="px-6 py-3 font-semibold">Target</th>
+                        <th class="px-6 py-3 font-semibold">Severity</th>
+                        <th class="px-6 py-3 font-semibold">Details</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-800 text-sm text-zinc-300">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="glass-panel p-6 rounded-3xl border-l-4 border-l-white">
+    <h3 class="text-lg font-semibold text-white mb-2">Detection Logic</h3>
+    <p class="text-zinc-400 text-sm leading-relaxed">
+        This module uses signature-based detection to identify common attack vectors. 
+        <span class="text-white font-medium">SQL Injection</span> looks for `UNION SELECT` or `' OR '1'='1` patterns. 
+        <span class="text-white font-medium">XSS</span> detects `<script>` tags in payloads. 
+        <span class="text-white font-medium">Port Scanning</span> identifies rapid connection attempts (SYN Floods).
+        <span class="text-white font-medium">Brute Force</span> detects repeated authentication failures (SSH/FTP).
+    </p>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const id = '{{ id }}';
+        fetch(`/api/data/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                const threatsBody = document.querySelector('#threats-table tbody');
+                const reconBody = document.querySelector('#recon-table tbody');
+                const bruteBody = document.querySelector('#brute-force-table tbody');
+                threatsBody.innerHTML = '';
+                reconBody.innerHTML = '';
+                bruteBody.innerHTML = '';
+                
+                let hasThreats = false;
+                let hasRecon = false;
+                let hasBrute = false;
+                
+                if (data.threats && data.threats.length > 0) {
+                    data.threats.forEach(t => {
+                        if (t.type === 'Clear-Text Credentials') return;
+
+                        const row = document.createElement('tr');
+                        row.className = "hover:bg-white/5 transition-colors";
+                        
+                        let severityClass = 'text-zinc-500';
+                        if (t.severity === 'High' || t.severity === 'Critical') severityClass = 'text-white font-bold';
+                        if (t.severity === 'Medium') severityClass = 'text-zinc-300 font-medium';
+
+                        row.innerHTML = `
+                            <td class="px-6 py-4 font-semibold text-zinc-200">${t.type}</td>
+                            <td class="px-6 py-4 font-mono text-xs text-zinc-400">${t.src_ip}</td>
+                            <td class="px-6 py-4 font-mono text-xs text-zinc-500">${t.dst_ip}</td>
+                            <td class="px-6 py-4 ${severityClass}">${t.severity}</td>
+                            <td class="px-6 py-4 text-zinc-500 max-w-md truncate" title="${t.detail}">${t.detail}</td>
+                        `;
+
+                        if (t.type.includes('Reconnaissance') || t.type.includes('Port Scan')) {
+                            reconBody.appendChild(row);
+                            hasRecon = true;
+                        } else if (t.type.includes('Brute Force')) {
+                            bruteBody.appendChild(row);
+                            hasBrute = true;
+                        } else {
+                            threatsBody.appendChild(row);
+                            hasThreats = true;
+                        }
+                    });
+                } 
+                
+                if (!hasThreats) {
+                    threatsBody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-zinc-600">No general threats detected.</td></tr>';
+                }
+                if (!hasRecon) {
+                    reconBody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-zinc-600">No reconnaissance activity detected.</td></tr>';
+                }
+                if (!hasBrute) {
+                    bruteBody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-zinc-600">No brute force attempts detected.</td></tr>';
+                }
+            });
+    });
+</script>
+{% endblock %}
